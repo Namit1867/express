@@ -48,36 +48,3 @@ async function initializeRedis() {
 /**
  * GET search for :query.
  */
-
-app.get('/search/{:query}', function (req, res, next) {
-  var query = req.params.query || '';
-  db.sMembers(query)
-    .then((vals) => res.send(vals))
-    .catch((err) => {
-      console.error(`Redis error for query "${query}":`, err);
-      next(err);
-    });
-});
-
-/**
- * GET client javascript. Here we use sendFile()
- * because serving __dirname with the static() middleware
- * would also mean serving our server "index.js" and the "search.jade"
- * template.
- */
-
-app.get('/client.js', function(req, res){
-  res.sendFile(path.join(__dirname, 'client.js'));
-});
-
-/**
- * Start the Server
- */
-
-(async () => {
-  await initializeRedis();
-  if (!module.parent) {
-    app.listen(3000);
-    console.log('Express started on port 3000');
-  }
-})();
